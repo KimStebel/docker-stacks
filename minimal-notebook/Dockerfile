@@ -23,6 +23,9 @@ RUN apt-get update && apt-get install -yq --no-install-recommends \
     texlive-fonts-extra \
     texlive-fonts-recommended \
     sudo \
+    nodejs \
+    nodejs-legacy \
+    npm \
     && apt-get clean
 
 # Install Tini
@@ -49,9 +52,14 @@ RUN mkdir -p $CONDA_DIR && \
 
 # Install Jupyter notebook
 RUN conda install --yes \
-    'notebook=4.0*' \
+#    'notebook=4.0*' \
     terminado \
     && conda clean -yt
+
+# Install Jupyter from source
+RUN git clone https://github.com/jupyter/notebook.git notebook && cd notebook && pip install --pre -e .
+
+
 
 # Create jovyan user with UID=1000 and in the 'users' group
 # Grant ownership over the conda dir and home dir, but stick the group as root.
